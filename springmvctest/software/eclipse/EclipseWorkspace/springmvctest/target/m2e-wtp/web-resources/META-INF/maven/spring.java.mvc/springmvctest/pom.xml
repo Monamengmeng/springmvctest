@@ -1,0 +1,239 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  <groupId>spring.java.mvc</groupId>
+  <artifactId>springmvctest</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>springmvctest Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  
+    <!-- 项目变量定义,主要用于版本、编码等常量定义 开始标记 -->
+  <properties>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  	<spring.version>4.3.17.RELEASE</spring.version>
+  </properties>
+  
+  <dependencies>
+
+  
+   <!-- <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.1.2</version>
+      <scope>test</scope>
+    </dependency> --> 
+    
+    
+    
+    
+    
+     <!-- J2EE 依赖包 开始标记 -->
+    <dependency>
+	   <groupId>javax.servlet</groupId>
+	   <artifactId>javax.servlet-api</artifactId>
+	   <version>3.1.0</version>
+	   <scope>provided</scope>
+	</dependency>
+    <dependency>
+	    <groupId>javax.servlet.jsp</groupId>
+	    <artifactId>jsp-api</artifactId>
+	    <version>2.2</version>
+	    <scope>provided</scope>
+	</dependency>
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+    </dependency>
+    <!-- J2EE 依赖包 结束标记 -->
+    
+    <!-- Spring依赖包 开始标记 -->
+    <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+		<version>${spring.version}</version><!-- 引用properties标签中定义的变量值 -->
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aspects</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-tx</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-jdbc</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-test</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-oxm</artifactId>
+	    <version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>  
+    	<artifactId>spring-test</artifactId>
+    	<version>${spring.version}</version>
+	</dependency>
+    <!-- Spring依赖包 结束标记 -->
+    
+        <!-- 日志依赖包log4j2 -->
+    <dependency>
+	    <groupId>org.apache.logging.log4j</groupId>
+	    <artifactId>log4j-core</artifactId>
+	    <version>2.8.2</version>
+	</dependency>
+    <dependency>
+	   <groupId>org.apache.logging.log4j</groupId>
+	   <artifactId>log4j-jcl</artifactId>
+	   <version>2.8.2</version>
+	</dependency>
+	
+	<!-- 添加commons-long依赖===类Spittle中使用 -->
+	<dependency>
+		<groupId>commons-lang</groupId>
+		<artifactId>commons-lang</artifactId>
+		<version>2.6</version>
+	</dependency>
+	
+    
+    
+  </dependencies>
+  <build>
+  	 <!-- 定义项目编译、打包等插件  开始标记 -->
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>  
+			<artifactId>maven-compiler-plugin</artifactId><!-- 编译插件 -->
+			<version>3.6.0</version>		<!-- 添加的maven版本 -->
+			<configuration>
+				<source>1.8</source><!-- 源码jdk1.8 -->
+				<target>1.8</target><!-- 按jdk1.8编译 -->
+				<encoding>${project.build.sourceEncoding}</encoding>
+			</configuration>
+		</plugin>
+		
+		<!-- 单元测试插件 -->
+		<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>  
+	        <artifactId>maven-surefire-plugin</artifactId>
+	        <version>2.17</version>
+	        <configuration>
+	        	<skipTests>true</skipTests><!-- 是否跳过测试 -->
+	        </configuration>
+	    </plugin>
+	    
+	    
+		
+		<!-- 依赖插件,解决非maven依赖的第三方jar包添加到安装包 -->
+		<plugin>
+            <groupId>org.apache.maven.plugins</groupId>  
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+            	<execution>
+            		<id>copy-dependency</id><!-- 自定义名称 -->
+            		<phase>package</phase><!-- 打包安装时触发执行，值为生命周期值(compile|package),同上-->
+            		<goals>
+            			<goal>copy-dependencies</goal><!-- 执行拷当前工程的依赖包任务(copy和 unpack操作是由要拷某个包，这个包需要具体指定要拷哪个包)-->
+            		</goals>
+            		<configuration>
+            			<outputDirectory>${project.build.directory}/lib</outputDirectory>
+            			<includeScope>compile</includeScope>
+            		</configuration>
+            	</execution>
+            </executions>
+		</plugin>
+		
+		<!-- 打War包插件,web项目默认打包插件 https://maven.apache.org/plugins/maven-war-plugin/ -->
+		<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-war-plugin</artifactId>
+	        <version>3.2.2</version>
+	        <configuration>
+	          <archive>
+	            <manifest><!-- 是否将jar包配置到META-INF/MANIFEST.MF文件,生成manifest类路径 -->
+	              <addClasspath>false</addClasspath>
+	            </manifest>
+	          </archive>
+	          <webResources><!-- 添加Web资源文件,如将test目录下所有文件添加至webapp下 -->
+	          	<webResource>
+	          		<directory>test</directory><!-- 相对pom.xml位置 -->
+	          	</webResource>
+	          </webResources>
+	        </configuration>
+	    </plugin>
+		
+		<!-- 配置文件插件 -->
+	    <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>  
+		    <artifactId>maven-resources-plugin</artifactId>  
+		    <version>3.0.1</version>
+		    <executions>
+		    	<execution>
+		    		<id>copy-resources</id><!-- 自定执行任务Id -->
+		    		<phase>compile</phase><!-- 在什么阶段执行:编译时执行 -->
+		    		<goals>
+		    			<goal>copy-resources</goal><!-- 文件拷备任务命令 -->
+		    		</goals>
+		    		<configuration><!-- 同上 -->
+		    			<resources>
+		    				<resource>
+		    					<directory>src/main/resources</directory>
+		    					<filtering>true</filtering>
+		    				</resource>
+		    			</resources>
+		    			<outputDirectory>${project.build.outputDirectory}</outputDirectory><!-- 配置文件输出位置 -->
+		    			<encoding>${project.build.sourceEncoding}</encoding>
+		    		</configuration>
+		    	</execution>
+		    </executions>
+		</plugin>
+		
+		
+		<!-- 解决maven-dependency兼容问题 -->
+		<plugin>  
+            <groupId>org.eclipse.m2e</groupId>  
+            <artifactId>lifecycle-mapping</artifactId>  
+            <version>1.0.0</version>  
+            <configuration>  
+              <lifecycleMappingMetadata>  
+                <pluginExecutions>  
+                  <pluginExecution>  
+                    <pluginExecutionFilter>  
+                      <groupId>org.apache.maven.plugins</groupId>  
+                      <artifactId>maven-dependency-plugin</artifactId>  
+                      <versionRange>[2.0,)</versionRange>  
+                      <goals>  
+                        <goal>copy-dependencies</goal>  
+                      </goals>  
+                    </pluginExecutionFilter>  
+                    <action>  
+                      <ignore/>  
+                    </action>  
+                  </pluginExecution>  
+                </pluginExecutions>  
+              </lifecycleMappingMetadata>  
+            </configuration>  
+          </plugin>
+	</plugins>  
+    <!-- 定义项目编译、打包等插件  结束标记-->
+  
+    <finalName>springmvctest</finalName>
+  </build>
+</project>
